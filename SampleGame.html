@@ -9,19 +9,21 @@
             margin: 0;
         }
     </style>
+    <div id="game-canvas" style="" />
 </head>
 <body>
 
 <script type="text/javascript">
 
-var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, '', { preload: preload, create: create, update: update  }, "game-canvas");
 
 function preload() {
-
     game.load.image('road', 'assets/tunnel_road.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('oil', 'assets/oil.png');
     game.load.image('beer', 'assets/beer.png');
+    game.load.image('obstacle', 'assets/obstacle.png');
+    game.load.image('star', 'assets/star.png');
     game.load.spritesheet('car', 'assets/car_blue.png', 32, 48);
 
 }
@@ -41,8 +43,9 @@ function create() {
 
     //  A simple background for our game
 
-    road = game.add.tileSprite(0, 0, 800, 600, 'road');
-    road.scale.setTo(2.5,3.5);
+    road = game.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, 'road');
+    scaleFactor = parseInt(window.innerWidth, 10) / 460;
+    road.scale.setTo(scaleFactor, scaleFactor);
     //  The platforms group contains the ground and the 2 ledges we can jump on
     platforms = game.add.group();
 
@@ -50,45 +53,26 @@ function create() {
     platforms.enableBody = true;
 
     // Here we create the ground.
-    /*var ground = platforms.create(0, 0, 'ground');
-
-    //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-    ground.scale.setTo(.5, 65);
-
-    //  This stops it from falling away when you jump on it
-    ground.body.immovable = true;
-
-    // Here we create the ground.
-    var ground2 = platforms.create(game.world.width - 200, 0, 'ground');
-
-    //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-    ground2.scale.setTo(.5, 65);
-
-    //  This stops it from falling away when you jump on it
-    ground2.body.immovable = true;
-*/
-
     oilPuddles = game.add.group();
     oilPuddles.enableBody = true;
 
     beerGlasses = game.add.group();
     beerGlasses.enableBody = true;
-    //  Now let's create two ledges
-   /* var ledge = platforms.create(400, 400, 'ground');
-    ledge.body.immovable = true;
 
-    ledge = platforms.create(-150, 250, 'ground');
-    ledge.body.immovable = true;
-*/
+    obstacles = game.add.group();
+    obstacles.enableBody = true;
+
+    stars = game.add.group();
+    stars.enableBody = true;
+
     // The player and its settings
-    player = game.add.sprite(32, game.world.height - 150, 'car');
-    player.scale.setTo(6, 6);
+    player = game.add.sprite(25, (window.innerHeight -  parseInt(window.innerHeight / 5, 10)), 'car');
+    player.scale.setTo(scaleFactor * 3, scaleFactor * 3);
     //  We need to enable physics on the player
     game.physics.arcade.enable(player);
 
     //  Player physics properties. Give the little guy a slight bounce.
-    player.body.bounce.y = 0.2;
-    player.body.gravity.y = 300;
+    player.body.gravity.y = 0;
     player.body.collideWorldBounds = true;
 
     //  Our two animations, walking left and right.
@@ -115,80 +99,97 @@ function create() {
     }
 */
     //  The score
-    scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+    scoreText = game.add.text(24, 24, 'score: 0', { fontSize: '48px', fill: '#000' });
 
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
     
 }
 
-function createHazard() {
-    var hazardRnd = Math.random();
-    var hazard;
-    if(hazardRnd < 0.5) {
-        hazard = oilPuddles.create(Math.random()* 1000, 0, 'oil');
+function createRoadObject() {
+    var roadObjectRnd = Math.random();
+    var roadObject;
+    if(roadObjectRnd < 0.3) {
+        roadObject = oilPuddles.create(parseInt(Math.random()* window.innerWidth, 10), 0, 'oil');
+        roadObject.scale.setTo(2.5,2.5);
         //  We will enable physics for any star that is created in this group
     }
-    else{
-        hazard = beerGlasses.create(Math.random()* 1000, 0, 'beer');
+    else if (roadObjectRnd < 0.6) {
+        roadObject = beerGlasses.create(parseInt(Math.random()* window.innerWidth, 10), 0, 'beer');
+        roadObject.scale.setTo(2.5,2.5);
     }
-    hazard.enableBody = true;
-    hazard.scale.setTo(2.5,2.5);
-    hazard.body.gravity.y = 500;
+    else if (roadObjectRnd < 0.8) {
+        roadObject = stars.create(parseInt(Math.random()* window.innerWidth, 10), 0, 'star');
+        roadObject.scale.setTo(3.5,3.5);
+    }
+    else {
+        var positionX = parseInt(Math.random()* window.innerWidth, 10);
+        positionX = positionX > (0.75 * window.innerWidth) ?  (0.75 * window.innerWidth) : positionX;
+        roadObject = obstacles.create(positionX, 0, 'obstacle');
+        roadObject.scale.setTo(2,2);
+    }
+    roadObject.enableBody = true;
+    roadObject.body.gravity.y = 500;
+    window.setTimeout(function() {roadObject.kill();roadObject.destroy();}, 4000);
 };
 
 var invertedControls = false;
 var slidingAround = false;
-function setInvertControls() {
+function setInvertControls(player, beer) {
     invertedControls = true;
-    window.setTimeout(function() {invertedControls = false;}, 5000);
+    beer.kill();
+    beer.destroy();
+    window.setTimeout(function() {invertedControls = false;}, 3000);
 };
 
-function setSlideAround() {
+function setSlideAround(player, puddle) {
     slidingAround = true;
-    window.setTimeout(function() {slidingAround = false;}, 2500);
+    puddle.kill();
+    puddle.destroy();
+    window.setTimeout(function() {slidingAround = false;}, 1600);
 };
+
+function collectStar (player, star) {
+    // Removes the star from the screen
+    star.kill();
+
+    //  Add and update the score
+    score += 10;
+    scoreText.text = 'Score: ' + score;
+}
 
 function update() {
     road.tilePosition.y += 10;
     //  Collide the player and the stars with the platforms
-    game.physics.arcade.collide(player, platforms);
-    game.physics.arcade.collide(stars, platforms);
+    //game.physics.arcade.collide(player, obstacles);
+
     if(Math.random() > 0.985)
-        createHazard();
+        createRoadObject();
 
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
     game.physics.arcade.overlap(player, oilPuddles, setSlideAround, null, this);
     game.physics.arcade.overlap(player, beerGlasses, setInvertControls, null, this);
+    game.physics.arcade.overlap(player, stars, collectStar, null, this);
+    game.physics.arcade.overlap(player, obstacles, function() { player.kill(); game.destroy();window.setTimeout(function(){} , 5000) }, null, this);
 
 
     //  Reset the players velocity (movement)
     player.body.velocity.x = 0;
+    var laneOffset = window.innerWidth;
     if(slidingAround){
-        console.log('SLIDE');
-        player.body.velocity.x = Math.random() > 0.5  ? 800 : -800;
+        player.body.velocity.x = Math.random() > 0.5  ? (laneOffset /2) : -(laneOffset/2);
         return;
     }
     if (cursors.left.isDown)
     {
         //  Move to the left
-        player.body.velocity.x = invertedControls ? 500 : -500;
-
-        player.animations.play('left');
+        player.body.velocity.x = invertedControls ? laneOffset : -laneOffset;
     }
     else if (cursors.right.isDown)
     {
+
         //  Move to the right
-        player.body.velocity.x = invertedControls ? -500 : 500;
-
-        player.animations.play('right');
-    }
-    else
-    {
-        //  Stand still
-        player.animations.stop();
-
-        player.frame = 4;
+        player.body.velocity.x = invertedControls ? -laneOffset : laneOffset;
     }
 }
 
