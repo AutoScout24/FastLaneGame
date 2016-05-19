@@ -4,9 +4,14 @@
         <meta charset="utf-8">
         <title>Fast Lane Racer Game</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.24/vue.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/2.4.7/phaser.min.js"></script>
         <style>
-            *, *:before, *:after { margin: 0; padding: 0; }
+            *, *:before, *:after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
             body {
                 font-family: sans-serif;
                 font-size: 100%;
@@ -15,6 +20,15 @@
             main {
                 max-width: 1100px;
                 margin: 0 auto;
+                position: relative;
+                overflow: hidden;
+                height: 100vh;
+            }
+
+            button {
+                border: 0;
+                background: transparent;
+                cursor: pointer;
             }
 
             #game-canvas {
@@ -27,6 +41,8 @@
             #dashboard {
                 height: 30vh;
                 display: flex;
+                /*border: 2px solid #aaa;*/
+                border-top: 2px solid #aaa;
             }
 
             #score {
@@ -41,15 +57,46 @@
                 justify-content: center;
             }
 
-            [id^="btn-"] {
+            [id^="btn-control-"] {
                 display: block;
                 width: 100%;
                 border: 0;
-                background-color: #345;
+                background-color: #fff;
                 color: #fff;
                 font-weight: bold;
                 font-size: 5rem;
                 text-align: center;
+                position: relative;
+                overflow: hidden;
+                outline: 0;
+            }
+
+            [id^="btn-control-"]:before {
+                content: '';
+                display: block;
+                position: absolute;
+                left: 0;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                background-position: center center;
+                background-repeat: no-repeat;
+                background-image: url('arrow.svg');
+            }
+
+            #btn-control-left {
+                border-right: 2px solid #aaa;
+            }
+
+            #btn-control-right {
+                border-left: 2px solid #aaa;
+            }
+
+            #btn-control-right:before {
+                transform: rotate(180deg);
+            }
+            #btn-control-brake:before {
+                transform: rotate(-90deg);
             }
 
             #info {
@@ -68,6 +115,29 @@
                 font-size: 1.5rem;
             }
 
+            #start-screen {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, .6);
+                z-index: 1;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            #btn-new-game {
+                border: 5px solid #fff;
+                padding: 16px 8px;
+                font-size: 2rem;
+                color: #fff;
+                background-color: transparent;
+                border-radius: 4px;
+            }
+
             #profile {
                 width: 48px;
                 height: 48px;
@@ -81,18 +151,25 @@
     </head>
     <body>
         <main>
-            <!-- <h1>Fast Lane Racer Game</h1> -->
-            <div id="info">
-                <div id="time">0:59</div>
-                <div id="profile"></div>
-            </div>
-            <canvas id="game-canvas"></canvas>
-            <div id="score">15000 km</div>
-            <div id="dashboard">
-                <button id="btn-left">&lt;</button>
-                <button id="btn-brake">v</button>
-                <button id="btn-right">&gt;</button>
-            </div>
+            <section id="start-screen" v-if="startScreenVisible">
+                <button id="btn-new-game" @click="start">New Game</button>
+            </section>
+
+            <section id="game-container">
+                <div id="info">
+                    <div id="time">{{ time | time }}</div>
+                    <div id="profile"></div>
+                </div>
+                <canvas id="game-canvas"></canvas>
+                <div id="score">15000 km</div>
+                <div id="dashboard">
+                    <button id="btn-control-left" v-on:touchstart="keypress('left')" v-on:mousedown="keypress('left')"></button>
+                    <button id="btn-control-brake" v-on:touchstart="keypress('brake')" v-on:mousedown="keypress('brake')"></button>
+                    <button id="btn-control-right" v-on:touchstart="keypress('right')" v-on:mousedown="keypress('right')"></button>
+                </div>
+            </section>
         </main>
+
+        <script src="index.js"></script>
     </body>
 </html>
