@@ -1,12 +1,11 @@
 Vue.filter('time', val => {
-    return `0:${val}`;
+    return `${Math.round(val)} sec`;
 });
 
 var vm = new Vue({
     data: {
         time: 48,
-        score: 15000,
-
+        score: 14999,
         running: false
     },
 
@@ -18,17 +17,14 @@ var vm = new Vue({
 
     methods: {
         start: function() {
-            console.log('start game');
+            console.log('Game started');
             this.running = true;
-            console.log(this.startScreenVisible)
-        },
-
-        left: function() {
-            console.log('left');
+            // Game.start();
         },
 
         keypress: function(dir) {
-            console.log('!!', dir);
+            console.log('Key pressed:', dir);
+            // Game[dir]();
         }
     },
 
@@ -43,7 +39,21 @@ document.addEventListener('keydown', e => {
             return vm.keypress('left');
         case 39:
             return vm.keypress('right');
-        // default:
-        //     console.log(e.keyCode);
     }
-})
+});
+
+
+const started = Date.now();
+
+setInterval(_ => {
+    vm.time = 60 - (Date.now() - started) / 1000;
+});
+
+
+// Game.onTimeChange(time => vm.time = time);
+// Game.onScoreChange(score => vm.score = score);
+// Game.onFinish(result => {
+//     vm.time = 0;
+//     vm.score = result.score;
+//     ...
+// });
