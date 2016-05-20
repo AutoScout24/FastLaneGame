@@ -59,7 +59,7 @@ window.PubSub.sub('game-started', e => {
         stars.enableBody = true;
 
         // The player and its settings
-        player = game.add.sprite(25, game.height, 'car_' + e.persona);
+        player = game.add.sprite(25, game.height - 50, 'car_' + e.persona);
         var carScaleFactor = (game.width / 10) / 65;
         player.anchor.setTo(0.5,0.5);
         player.scale.setTo(carScaleFactor, carScaleFactor);
@@ -81,7 +81,7 @@ window.PubSub.sub('game-started', e => {
         currentBgSpeed = 0;
         maxObstacleSpeed = getMaxObstacleSpeed(e.persona);
         scoreBonus = getScoreBonus(e.persona);
-        console.log('BG ' + maxBgSpeed + ' OBST ' + maxObstacleSpeed );
+
         /*window.setInterval(function() {
             if(currentBgSpeed < maxBgSpeed) {
                 currentBgSpeed++;
@@ -188,7 +188,7 @@ window.PubSub.sub('game-started', e => {
         game.physics.arcade.overlap(player, stars, collectStar, null, this);
         game.physics.arcade.overlap(player, obstacles, function() {
             var explosions = game.add.group();
-            var explosion = explosions.create(player.position.x, player.position.y, 'kaboom');
+            var explosion = explosions.create(player.position.x, player.position.y - 60, 'kaboom');
             explosion.animations.add('kaboom');
             explosion.play('kaboom', 30, false, true);
 
