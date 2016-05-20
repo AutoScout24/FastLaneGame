@@ -21,7 +21,7 @@ function preload() {
     game.load.image('beer', 'assets/beer.png');
     game.load.image('obstacle', 'assets/obstacle.png');
     game.load.image('star', 'assets/star.png');
-    game.load.spritesheet('car', 'assets/car_blue.png', 32, 48);
+    game.load.image('car', 'assets/car_blue.png');
 
 }
 
@@ -53,10 +53,11 @@ function create() {
     stars.enableBody = true;
 
     // The player and its settings
-    // player = game.add.sprite(25, (window.innerHeight -  parseInt(window.innerHeight / 5, 10)), 'car');
-    // player = game.add.sprite(25, game.height, 'car');
     player = game.add.sprite(25, game.height, 'car');
-    // player.scale.setTo(scaleFactor * 3, scaleFactor * 3);
+    var carScaleFactor = (game.width / 10) / 26;
+    console.log('scale ' + carScaleFactor);
+    player.scale.setTo(carScaleFactor, carScaleFactor);
+
     //  We need to enable physics on the player
     game.physics.arcade.enable(player);
 
@@ -65,28 +66,9 @@ function create() {
     player.body.collideWorldBounds = true;
 
     //  Our two animations, walking left and right.
-    player.animations.add('left', [0, 1, 2, 3], 0, true);
-    player.animations.add('right', [5, 6, 7, 8], 0, true);
+    player.animations.add('left', [0], 0, true);
+    player.animations.add('right', [0], 0, true);
 
-    //  Finally some stars to collect
-    //stars = game.add.group();
-
-    //  We will enable physics for any star that is created in this group
-    //stars.enableBody = true;
-
-    //  Here we'll create 12 of them evenly spaced apart
-    /*for (var i = 0; i < 12; i++)
-    {
-        //  Create a star inside of the 'stars' group
-        var star = stars.create(i * 70, 0, 'star');
-
-        //  Let gravity do its thing
-        star.body.gravity.y = 300;
-
-        //  This just gives each star a slightly random bounce value
-        star.body.bounce.y = 0.7 + Math.random() * 0.2;
-    }
-*/
     //  The score
     scoreText = game.add.text(24, 24, 'score: 0', { fontSize: '26px', fill: '#000' });
 
@@ -98,24 +80,27 @@ function create() {
 function createRoadObject() {
     var roadObjectRnd = Math.random();
     var roadObject;
+    var scaleFactor = 1;
+    var roadObjectWidth = 1;
     if(roadObjectRnd < 0.3) {
-        roadObject = oilPuddles.create(Math.random() * game.width | 0, 0, 'oil');
-        // roadObject.scale.setTo(2.5,2.5);
+        roadObject = oilPuddles.create(Math.random() * (game.width - 48) | 0, 0, 'oil');
+        scaleFactor = (game.width / 10) / 48;
     }
     else if (roadObjectRnd < 0.6) {
-        roadObject = beerGlasses.create(Math.random() * game.width | 0, 0, 'beer');
-        // roadObject.scale.setTo(2.5,2.5);
+        roadObject = beerGlasses.create(Math.random() * (game.width - 48) | 0, 0, 'beer');
+        scaleFactor = (game.width / 10) / 48;
     }
     else if (roadObjectRnd < 0.8) {
-        roadObject = stars.create(Math.random() * game.width | 0, 0, 'star');
-        // roadObject.scale.setTo(3.5,3.5);
+        roadObject = stars.create(Math.random() * (game.width - 30) | 0, 0, 'star');
+        scaleFactor = (game.width / 10) / 30;
     }
     else {
         var positionX = Math.random() * game.width | 0;
         positionX = positionX > (0.75 * game.width) ?  (0.75 * game.width) : positionX;
         roadObject = obstacles.create(positionX, 0, 'obstacle');
-        // roadObject.scale.setTo(2,2);
+        scaleFactor = (game.width / 6) / 100;
     }
+    roadObject.scale.setTo(scaleFactor, scaleFactor);
     roadObject.enableBody = true;
     roadObject.body.gravity.y = 500;
     setTimeout(function() {roadObject.kill();roadObject.destroy();}, 4000);
