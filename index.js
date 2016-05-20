@@ -19,7 +19,7 @@ var vm = new Vue({
         start: function() {
             console.log('Game started');
             this.running = true;
-            // Game.start();
+            window.PubSub.pub('game-started', {});
         },
 
         keypress: function(dir) {

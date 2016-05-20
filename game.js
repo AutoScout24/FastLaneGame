@@ -9,6 +9,12 @@ window.Game = {
 };
 
 
+window.PubSub.sub('game-started', e => {
+
+
+// window.PubSub.sub('game-started', e => { console.log('started'); });
+
+
 var el = document.querySelector('#game-canvas');
 var game = new Phaser.Game(el.clientWidth, el.clientHeight, Phaser.AUTO, el, { preload: preload, create: create, update: update  });
 
@@ -180,3 +186,5 @@ function update(game) {
         player.body.velocity.x = invertedControls ? -laneOffset : laneOffset;
     }
 }
+
+ });
