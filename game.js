@@ -60,7 +60,7 @@ window.PubSub.sub('game-started', e => {
 
         // The player and its settings
         player = game.add.sprite(25, game.height, 'car_' + e.persona);
-        var carScaleFactor = (game.width / 10) / 26;
+        var carScaleFactor = (game.width / 10) / 65;
         player.anchor.setTo(0.5,0.5);
         player.scale.setTo(carScaleFactor, carScaleFactor);
 
