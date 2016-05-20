@@ -11,13 +11,29 @@
     <body>
         <main>
             <section id="start-screen" v-if="startScreenVisible">
-                <button id="btn-new-game" @click="start">New Game</button>
+                <p style="width: 100%; font-size:32px; color: #fff; margin-top: 32px; text-align: center; font-weight: bold; background-color: orange; padding: 8px 0;">Choose your player</p>
+                <button class="btn-persona" @click="start('jan')">
+                    <img src="assets/jan.png">
+                    <p style="background-color: #2f95d0;">Jan</p>
+                </button>
+                <button class="btn-persona" @click="start('shenaz')">
+                    <img src="assets/shenaz.png">
+                    <p style="background-color: #2f95d0;">Shenaz</p>
+                </button>
+                <button class="btn-persona" @click="start('johanna')">
+                    <img src="assets/johanna.png">
+                    <p style="background-color: #2f95d0;">Johanna</p>
+                </button>
+                <button class="btn-persona" @click="start('volker')">
+                    <img src="assets/volker.png">
+                    <p style="background-color: #2f95d0;">Volker</p>
+                </button>
             </section>
 
             <section id="game-container">
                 <div id="info">
                     <div id="time">{{ time | time }}</div>
-                    <div id="profile"></div>
+                    <div id="profile" v-if="persona" style="background-image: url(assets/{{ persona }}.png)"></div>
                 </div>
                 <div id="game-canvas"></div>
                 <div id="score">Score: {{ score }}</div>

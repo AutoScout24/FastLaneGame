@@ -150,6 +150,7 @@ function update(game) {
 
         player.kill();
         //game.destroy();
+        
         setTimeout(function(){}, 5000);
     }, null, this);
 

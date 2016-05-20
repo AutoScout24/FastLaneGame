@@ -6,7 +6,8 @@ var vm = new Vue({
     data: {
         time: 48,
         score: 0,
-        running: false
+        running: false,
+        persona: ''
     },
 
     computed: {
@@ -16,10 +17,10 @@ var vm = new Vue({
     },
 
     methods: {
-        start: function() {
-            console.log('Game started');
+        start: function(persona) {
             this.running = true;
-            window.PubSub.pub('game-started', {});
+            this.persona = persona;
+            window.PubSub.pub('game-started', { persona });
         },
 
         keypress: function(dir) {
