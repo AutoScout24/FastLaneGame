@@ -1,5 +1,7 @@
 'use strict';
 
+window.PhaserGlobal = { disableWebAudio: true };
+
 window.PubSub.sub('game-started', e => {
 
     var el = document.querySelector('#game-canvas');
@@ -223,7 +225,7 @@ window.PubSub.sub('game-started', e => {
         explosion.animations.add('kaboom');
         explosion.play('kaboom', 30, false, true);
 
-        game.sound.play('explosion', 2);
+        game.sound.play('explosion', 1);
 
         player.kill();
         //game.destroy();

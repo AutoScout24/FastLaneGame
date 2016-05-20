@@ -78,6 +78,8 @@ setInterval(function (_) {
 // });
 'use strict';
 
+window.PhaserGlobal = { disableWebAudio: true };
+
 window.PubSub.sub('game-started', function (e) {
 
     var el = document.querySelector('#game-canvas');
@@ -90,6 +92,9 @@ window.PubSub.sub('game-started', function (e) {
         game.load.image('beer', 'assets/beer.png');
         game.load.image('obstacle', 'assets/obstacle.png');
         game.load.image('star', 'assets/star.png');
+
+        game.load.image('car_traffic', 'assets/car_traffic.png');
+        game.load.image('motorcycle', 'assets/motorcycle.png');
 
         game.load.image('car_jan', 'assets/car_jan.png');
         game.load.image('car_shenaz', 'assets/car_shenaz.png');
@@ -107,6 +112,8 @@ window.PubSub.sub('game-started', function (e) {
     var maxBgSpeed;
     var oilPuddles;
     var beerGlasses;
+    var motorcycles;
+    var traffic;
     var obstacles;
     var currentBgSpeed;
     var maxObstacleSpeed;
@@ -143,6 +150,12 @@ window.PubSub.sub('game-started', function (e) {
 
         stars = game.add.group();
         stars.enableBody = true;
+
+        traffic = game.add.group();
+        traffic.enableBody = true;
+
+        motorcycles = game.add.group();
+        motorcycles.enableBody = true;
 
         // The player and its settings
         player = game.add.sprite(25, game.height - 50, 'car_' + e.persona);
@@ -205,13 +218,13 @@ window.PubSub.sub('game-started', function (e) {
         var roadObject;
         var scaleFactor = 1;
 
-        if (roadObjectRnd < 0.3) {
+        if (roadObjectRnd < 0.2) {
             roadObject = oilPuddles.create(Math.random() * (game.width - 48) | 0, 0, 'oil');
             scaleFactor = game.width / 10 / 48;
-        } else if (roadObjectRnd < 0.6) {
+        } else if (roadObjectRnd < 0.4) {
             roadObject = beerGlasses.create(Math.random() * (game.width - 48) | 0, 0, 'beer');
             scaleFactor = game.width / 10 / 48;
-        } else if (roadObjectRnd < 0.8) {
+        } else if (roadObjectRnd < 0.80) {
             roadObject = stars.create(Math.random() * (game.width - 30) | 0, 0, 'star');
             scaleFactor = game.width / 10 / 30;
         } else {
@@ -220,6 +233,7 @@ window.PubSub.sub('game-started', function (e) {
             roadObject = obstacles.create(positionX, 0, 'obstacle');
             scaleFactor = game.width / 6 / 100;
         }
+
         roadObject.scale.setTo(scaleFactor, scaleFactor);
         roadObject.enableBody = true;
         roadObject.body.velocity.y = maxObstacleSpeed;
@@ -227,6 +241,30 @@ window.PubSub.sub('game-started', function (e) {
             roadObject.kill();
             roadObject.destroy();
         }, 4000);
+
+        if (roadObjectRnd < 0.075) {
+            var carScaleFactor = game.width / 10 / 65;
+            var enemycar = traffic.create(Math.random() * (game.width - 48) | 0, -50, 'car_traffic');
+            enemycar.scale.setTo(carScaleFactor, carScaleFactor);
+            enemycar.enableBody = true;
+            enemycar.body.gravity.y = maxObstacleSpeed / 3;
+            //enemycar.body.immovable = true;
+            setTimeout(function () {
+                enemycar.kill();
+                enemycar.destroy();
+            }, 10000);
+        } else if (roadObjectRnd > 0.925) {
+            var motoScaleFactor = game.width / 10 / 60;
+            var motorcycle = motorcycles.create(Math.random() * (game.width - 48) | 0, -50, 'motorcycle');
+            motorcycle.scale.setTo(motoScaleFactor, motoScaleFactor);
+            motorcycle.enableBody = true;
+            motorcycle.body.gravity.y = maxObstacleSpeed / 3;
+            //motorcycle.body.immovable = true;
+            setTimeout(function () {
+                motorcycle.kill();
+                motorcycle.destroy();
+            }, 10000);
+        }
     };
 
     var invertedControls = false;
@@ -251,10 +289,22 @@ window.PubSub.sub('game-started', function (e) {
 
     function collectStar(player, star) {
         window.PubSub.pub('score', 10);
-        game.sound.play('pickup-coin');
+        game.sound.play('pickup-coin', 0.5);
         // Removes the star from the screen
         star.kill();
     }
+
+    function showExplosion() {
+        var explosions = game.add.group();
+        var explosion = explosions.create(player.position.x, player.position.y - 60, 'kaboom');
+        explosion.animations.add('kaboom');
+        explosion.play('kaboom', 30, false, true);
+
+        game.sound.play('explosion', 1);
+
+        player.kill();
+        //game.destroy();
+    };
 
     function update(game) {
         road.tilePosition.y += maxBgSpeed;
@@ -269,17 +319,9 @@ window.PubSub.sub('game-started', function (e) {
         game.physics.arcade.overlap(player, oilPuddles, setSlideAround, null, this);
         game.physics.arcade.overlap(player, beerGlasses, setInvertControls, null, this);
         game.physics.arcade.overlap(player, stars, collectStar, null, this);
-        game.physics.arcade.overlap(player, obstacles, function () {
-            var explosions = game.add.group();
-            var explosion = explosions.create(player.position.x, player.position.y - 60, 'kaboom');
-            explosion.animations.add('kaboom');
-            explosion.play('kaboom', 30, false, true);
-
-            game.sound.play('explosion');
-
-            player.kill();
-            //game.destroy();
-        }, null, this);
+        game.physics.arcade.overlap(player, obstacles, showExplosion, null, this);
+        game.physics.arcade.collide(player, motorcycles);
+        game.physics.arcade.collide(player, traffic);
 
         //  Reset the players velocity (movement)
         player.body.velocity.x = 0;
