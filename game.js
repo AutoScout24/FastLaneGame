@@ -139,16 +139,11 @@ function collectStar (player, star) {
     star.kill();
 }
 
-var log = x => console.log(x);
-
 function update(game) {
-
-    log(game);
-    log = x => x;
-
     road.tilePosition.y += currentBgSpeed;
     if(!slidingAround)
         player.angle = 0;
+
     //  Collide the player and the stars with the platforms
     //game.physics.arcade.collide(player, obstacles);
 
