@@ -104,7 +104,7 @@ window.PubSub.sub('game-started', e => {
         motorcycles.enableBody = true;
 
         // The player and its settings
-        player = game.add.sprite(25, game.height - 50, 'car_' + e.persona);
+        player = game.add.sprite(game.width / 2, game.height - 50, 'car_' + e.persona);
         var carScaleFactor = (game.width / 10) / 65;
         player.anchor.setTo(0.5,0.5);
         player.scale.setTo(carScaleFactor, carScaleFactor);
@@ -164,15 +164,15 @@ window.PubSub.sub('game-started', e => {
         var roadObject;
         var scaleFactor = 1;
 
-        if(roadObjectRnd < 0.2) {
+        if(roadObjectRnd < 0.18) {
             roadObject = oilPuddles.create(Math.random() * (game.width - 48) | 0, 0, 'oil');
             scaleFactor = (game.width / 10) / 48;
         }
-        else if (roadObjectRnd < 0.4) {
+        else if (roadObjectRnd < 0.36) {
             roadObject = beerGlasses.create(Math.random() * (game.width - 48) | 0, 0, 'beer');
             scaleFactor = (game.width / 10) / 48;
         }
-        else if (roadObjectRnd < 0.80) {
+        else if (roadObjectRnd < 0.9) {
             roadObject = stars.create(Math.random() * (game.width - 30) | 0, 0, 'star');
             scaleFactor = (game.width / 10) / 30;
         }
