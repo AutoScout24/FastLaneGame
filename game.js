@@ -69,7 +69,7 @@ window.PubSub.sub('game-started', e => {
         stars.enableBody = true;
 
         // The player and its settings
-        player = game.add.sprite(25, game.height, 'car_' + e.persona);
+        player = game.add.sprite(25, game.height - 50, 'car_' + e.persona);
         var carScaleFactor = (game.width / 10) / 65;
         player.anchor.setTo(0.5,0.5);
         player.scale.setTo(carScaleFactor, carScaleFactor);
@@ -85,15 +85,44 @@ window.PubSub.sub('game-started', e => {
         player.animations.add('left', [0], 0, true);
         player.animations.add('right', [0], 0, true);
 
-        maxBgSpeed = 7;
+        maxBgSpeed = getMaxBgSpeed(e.persona);;
         currentBgSpeed = 0;
-        maxObstacleSpeed = 400;
-        window.setInterval(function() {
+        maxObstacleSpeed = getMaxObstacleSpeed(e.persona);
+        scoreBonus = getScoreBonus(e.persona);
+
+        /*window.setInterval(function() {
             if(currentBgSpeed < maxBgSpeed) {
                 currentBgSpeed++;
             }
-        }, 300);
+        }, 300);*/
     }
+
+    function getMaxBgSpeed(hero) {
+        if(hero == 'jan') {
+            return 20;
+        } else if(hero == 'volker') {
+            return 5;
+        }
+        return 10;
+    };
+
+    function getMaxBgSpeed(hero) {
+        if(hero == 'jan') {
+            return 10;
+        } else if(hero == 'volker') {
+            return 5;
+        }
+        return 7;
+    };
+
+    function getMaxObstacleSpeed(hero) {
+        if(hero == 'jan') {
+            return 580;
+        } else if(hero == 'volker') {
+            return 300;
+        }
+        return 400;
+    };
 
     function createRoadObject() {
         var roadObjectRnd = Math.random();
@@ -151,14 +180,14 @@ window.PubSub.sub('game-started', e => {
     }
 
     function update(game) {
-        road.tilePosition.y += currentBgSpeed;
+        road.tilePosition.y += maxBgSpeed;
         if(!slidingAround)
             player.angle = 0;
 
         //  Collide the player and the stars with the platforms
         //game.physics.arcade.collide(player, obstacles);
 
-        if(currentBgSpeed == maxBgSpeed && Math.random() > 0.985)
+        if(Math.random() > 0.985)
             createRoadObject();
 
         //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
@@ -167,7 +196,7 @@ window.PubSub.sub('game-started', e => {
         game.physics.arcade.overlap(player, stars, collectStar, null, this);
         game.physics.arcade.overlap(player, obstacles, function() {
             var explosions = game.add.group();
-            var explosion = explosions.create(player.position.x, player.position.y, 'kaboom');
+            var explosion = explosions.create(player.position.x, player.position.y - 60, 'kaboom');
             explosion.animations.add('kaboom');
             explosion.play('kaboom', 30, false, true);
 
