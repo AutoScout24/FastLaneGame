@@ -75,7 +75,7 @@ function create() {
     }
 */
     //  The score
-    scoreText = game.add.text(24, 24, 'score: 0', { fontSize: '48px', fill: '#000' });
+    scoreText = game.add.text(24, 24, 'score: 0', { fontSize: '26px', fill: '#000' });
 
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
