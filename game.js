@@ -76,15 +76,44 @@ window.PubSub.sub('game-started', e => {
 
         //  Our controls.
         cursors = game.input.keyboard.createCursorKeys();
-            maxBgSpeed = 7;
-            currentBgSpeed = 0;
-            maxObstacleSpeed = 400;
-            window.setInterval(function() {
-                if(currentBgSpeed < maxBgSpeed) {
-                    currentBgSpeed++;
-                }
-        }, 300);
+        maxBgSpeed = getMaxBgSpeed(e.persona);;
+        currentBgSpeed = 0;
+        maxObstacleSpeed = getMaxObstacleSpeed(e.persona);
+        scoreBonus = getScoreBonus(e.persona);
+        console.log('BG ' + maxBgSpeed + ' OBST ' + maxObstacleSpeed );
+        /*window.setInterval(function() {
+            if(currentBgSpeed < maxBgSpeed) {
+                currentBgSpeed++;
+            }
+        }, 300);*/
     }
+
+    function getMaxBgSpeed(hero) {
+        if(hero == 'jan') {
+            return 20;
+        } else if(hero == 'volker') {
+            return 5;
+        }
+        return 10;
+    };
+
+    function getMaxBgSpeed(hero) {
+        if(hero == 'jan') {
+            return 10;
+        } else if(hero == 'volker') {
+            return 5;
+        }
+        return 7;
+    };
+
+    function getMaxObstacleSpeed(hero) {
+        if(hero == 'jan') {
+            return 580;
+        } else if(hero == 'volker') {
+            return 300;
+        }
+        return 400;
+    };
 
     function createRoadObject() {
         var roadObjectRnd = Math.random();
@@ -142,14 +171,14 @@ window.PubSub.sub('game-started', e => {
     }
 
     function update(game) {
-        road.tilePosition.y += currentBgSpeed;
+        road.tilePosition.y += maxBgSpeed;
         if(!slidingAround)
             player.angle = 0;
 
         //  Collide the player and the stars with the platforms
         //game.physics.arcade.collide(player, obstacles);
 
-        if(currentBgSpeed == maxBgSpeed && Math.random() > 0.985)
+        if(Math.random() > 0.985)
             createRoadObject();
 
         //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
