@@ -59,7 +59,7 @@ function create() {
     // The player and its settings
     player = game.add.sprite(25, game.height, 'car');
     var carScaleFactor = (game.width / 10) / 26;
-
+    player.anchor.setTo(0.5,0.5);
     player.scale.setTo(carScaleFactor, carScaleFactor);
 
     //  We need to enable physics on the player
@@ -75,14 +75,21 @@ function create() {
 
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
-
+        maxBgSpeed = 7;
+        currentBgSpeed = 0;
+        maxObstacleSpeed = 400;
+        window.setInterval(function() {
+            if(currentBgSpeed < maxBgSpeed) {
+                currentBgSpeed++;
+            }
+    }, 300);
 }
 
 function createRoadObject() {
     var roadObjectRnd = Math.random();
     var roadObject;
     var scaleFactor = 1;
-    var roadObjectWidth = 1;
+
     if(roadObjectRnd < 0.3) {
         roadObject = oilPuddles.create(Math.random() * (game.width - 48) | 0, 0, 'oil');
         scaleFactor = (game.width / 10) / 48;
@@ -103,8 +110,11 @@ function createRoadObject() {
     }
     roadObject.scale.setTo(scaleFactor, scaleFactor);
     roadObject.enableBody = true;
-    roadObject.body.velocity.y = 400;
-    setTimeout(function() {roadObject.kill();roadObject.destroy();}, 4000);
+    roadObject.body.velocity.y = maxObstacleSpeed;
+    setTimeout(function() {
+         roadObject.kill();
+         roadObject.destroy();
+    }, 4000);
 };
 
 var invertedControls = false;
@@ -130,12 +140,14 @@ function collectStar (player, star) {
 }
 
 function update(game) {
+    road.tilePosition.y += currentBgSpeed;
+    if(!slidingAround)
+        player.angle = 0;
 
-    road.tilePosition.y += 7;
     //  Collide the player and the stars with the platforms
     //game.physics.arcade.collide(player, obstacles);
 
-    if(Math.random() > 0.985)
+    if(currentBgSpeed == maxBgSpeed && Math.random() > 0.985)
         createRoadObject();
 
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
@@ -150,8 +162,6 @@ function update(game) {
 
         player.kill();
         //game.destroy();
-        
-        setTimeout(function(){}, 5000);
     }, null, this);
 
 
@@ -159,18 +169,22 @@ function update(game) {
     player.body.velocity.x = 0;
     var laneOffset = game.width;
     if(slidingAround){
-        player.body.velocity.x = Math.random() > 0.5  ? (laneOffset /2) : -(laneOffset/2);
+        player.body.velocity.x = Math.random() > 0.5  ? (laneOffset /10) : -(laneOffset/10);
+        var angle = parseInt(Math.random() * 180);
+        player.angle = player.angle + 10;
         return;
     }
     if (cursors.left.isDown)
     {
         //  Move to the left
         player.body.velocity.x = invertedControls ? laneOffset : -laneOffset;
+        player.angle = invertedControls ? 10 : -10;
     }
     else if (cursors.right.isDown)
     {
         //  Move to the right
         player.body.velocity.x = invertedControls ? -laneOffset : laneOffset;
+        player.angle = invertedControls ? -10 : 10;
     }
 }
 
