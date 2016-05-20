@@ -147,6 +147,7 @@ function update(game) {
     log = x => x;
 
     road.tilePosition.y += currentBgSpeed;
+    player.angle = 0;
     //  Collide the player and the stars with the platforms
     //game.physics.arcade.collide(player, obstacles);
 
@@ -179,11 +180,13 @@ function update(game) {
     {
         //  Move to the left
         player.body.velocity.x = invertedControls ? laneOffset : -laneOffset;
+        player.angle = invertedControls ? 10 : -10;
     }
     else if (cursors.right.isDown)
     {
         //  Move to the right
         player.body.velocity.x = invertedControls ? -laneOffset : laneOffset;
+        player.angle = invertedControls ? -10 : 10;
     }
 }
 
