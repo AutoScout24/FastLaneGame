@@ -170,16 +170,26 @@ window.PubSub.sub('game-started', e => {
 
         if(roadObjectRnd < 0.075) {
             var carScaleFactor = (game.width / 10) / 65;
-            var enemycar = traffic.create(Math.random() * (game.width - 48) | 0, 0, 'car_traffic');
+            var enemycar = traffic.create(Math.random() * (game.width - 48) | 0, -50, 'car_traffic');
             enemycar.scale.setTo(carScaleFactor, carScaleFactor);
             enemycar.enableBody = true;
             enemycar.body.velocity.y = maxObstacleSpeed / 3;
+            enemycar.body.immovable = true;
+            setTimeout(function() {
+                enemycar.kill();
+                enemycar.destroy();
+            }, 8000);
         } else if(roadObjectRnd > 0.925) {
-            var motoScaleFactor = (game.width / 10) / 40;
-            var motorcycle = motorcycles.create(Math.random() * (game.width - 48) | 0, 0, 'motorcycle');
+            var motoScaleFactor = (game.width / 10) / 60;
+            var motorcycle = motorcycles.create(Math.random() * (game.width - 48) | 0, -50, 'motorcycle');
             motorcycle.scale.setTo(motoScaleFactor, motoScaleFactor);
             motorcycle.enableBody = true;
             motorcycle.body.velocity.y = maxObstacleSpeed / 3;
+            motorcycle.body.immovable = true;
+            setTimeout(function() {
+                motorcycle.kill();
+                motorcycle.destroy();
+            }, 8000);
         }
     };
 
@@ -234,6 +244,9 @@ window.PubSub.sub('game-started', e => {
         game.physics.arcade.overlap(player, beerGlasses, setInvertControls, null, this);
         game.physics.arcade.overlap(player, stars, collectStar, null, this);
         game.physics.arcade.overlap(player, obstacles, showExplosion, null, this);
+        //game.physics.arcade.overlap(player, traffic, showExplosion, null, this);
+        game.physics.arcade.overlap(player, motorcycles);
+        game.physics.arcade.collide(player, traffic);
 
 
         //  Reset the players velocity (movement)
