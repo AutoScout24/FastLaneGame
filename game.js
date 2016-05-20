@@ -75,14 +75,21 @@ function create() {
 
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
-
+        maxBgSpeed = 7;
+        currentBgSpeed = 0;
+        maxObstacleSpeed = 400;
+        window.setInterval(function() {
+            if(currentBgSpeed < maxBgSpeed) {
+                currentBgSpeed++;
+            }
+    }, 300);
 }
 
 function createRoadObject() {
     var roadObjectRnd = Math.random();
     var roadObject;
     var scaleFactor = 1;
-    var roadObjectWidth = 1;
+
     if(roadObjectRnd < 0.3) {
         roadObject = oilPuddles.create(Math.random() * (game.width - 48) | 0, 0, 'oil');
         scaleFactor = (game.width / 10) / 48;
@@ -103,8 +110,11 @@ function createRoadObject() {
     }
     roadObject.scale.setTo(scaleFactor, scaleFactor);
     roadObject.enableBody = true;
-    roadObject.body.velocity.y = 400;
-    setTimeout(function() {roadObject.kill();roadObject.destroy();}, 4000);
+    roadObject.body.velocity.y = maxObstacleSpeed;
+    setTimeout(function() {
+         roadObject.kill();
+         roadObject.destroy();
+    }, 4000);
 };
 
 var invertedControls = false;
@@ -136,11 +146,11 @@ function update(game) {
     log(game);
     log = x => x;
 
-    road.tilePosition.y += 7;
+    road.tilePosition.y += currentBgSpeed;
     //  Collide the player and the stars with the platforms
     //game.physics.arcade.collide(player, obstacles);
 
-    if(Math.random() > 0.985)
+    if(currentBgSpeed == maxBgSpeed && Math.random() > 0.985)
         createRoadObject();
 
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
@@ -155,7 +165,6 @@ function update(game) {
 
         player.kill();
         //game.destroy();
-        setTimeout(function(){}, 5000);
     }, null, this);
 
 
