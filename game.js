@@ -31,6 +31,7 @@ window.PubSub.sub('game-started', e => {
 
         game.load.spritesheet('kaboom', 'assets/explode.png', 128, 128);
         game.load.audio('pickup-coin', 'assets/pickup-coin.wav');
+        game.load.audio('explosion', 'assets/explosion.wav');
     }
 
     var player;
@@ -190,6 +191,8 @@ window.PubSub.sub('game-started', e => {
             var explosion = explosions.create(player.position.x, player.position.y, 'kaboom');
             explosion.animations.add('kaboom');
             explosion.play('kaboom', 30, false, true);
+
+            game.sound.play('explosion');
 
             player.kill();
             //game.destroy();
