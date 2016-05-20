@@ -38,6 +38,8 @@ window.PubSub.sub('game-started', e => {
     var obstacles;
     var currentBgSpeed;
     var maxObstacleSpeed;
+    var scoreBonus;
+    
     var cursors = { left: false, right: false };
 
     window.PubSub.sub('keydown', dir => {
@@ -106,7 +108,7 @@ window.PubSub.sub('game-started', e => {
         }, 300);*/
     }
 
-    function getMaxBgSpeed(hero) {
+    function getScoreBonus(hero) {
         if(hero == 'jan') {
             return 20;
         } else if(hero == 'volker') {
