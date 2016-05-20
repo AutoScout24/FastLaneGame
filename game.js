@@ -1,13 +1,4 @@
-window.Game = {
-    init: _ => {},
-    start: _ => {},
-    pause: _ => {},
-    reset: _ => {},
-
-    keydown: dir => {},
-    keyup: dir => {}
-};
-
+'use strict';
 
 window.PubSub.sub('game-started', e => {
 
@@ -35,7 +26,14 @@ window.PubSub.sub('game-started', e => {
     }
 
     var player;
-
+    var road;
+    var scaleFactor;
+    var maxBgSpeed;
+    var oilPuddles;
+    var beerGlasses;
+    var obstacles;
+    var currentBgSpeed;
+    var maxObstacleSpeed;
     var cursors = { left: false, right: false };
 
     window.PubSub.sub('keydown', dir => {

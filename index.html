@@ -54,7 +54,14 @@
         </main>
 
         <script src="pubsub.js"></script>
-        <script src="index.js"></script>
-        <script src="game.js"></script>
+
+        <script>
+            if (document.location.search.indexOf('debug') >= 0) {
+                document.write('<script src="index.js"></sc' + 'ript>')
+                document.write('<script src="game.js"></sc' + 'ript>')
+            } else {
+                document.write('<script src="game-compiled.js"></sc' + 'ript>')
+            }
+        </script>
     </body>
 </html>
