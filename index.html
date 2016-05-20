@@ -16,7 +16,7 @@
         </script>
         <main>
             <section id="start-screen" v-if="startScreenVisible">
-                <p v-if="score" style="font-size: 20px; font-weight: bold; text-align: center;">Your Score: {{ score }}</p>
+                <p v-if="score" style="font-size: 20px; font-weight: bold; text-align: center; color: #fff; padding-top: 20px;">Your Score: {{ score }}</p>
                 <p style="width: 100%; font-size:32px; color: #fff; margin-top: 32px; text-align: center; font-weight: bold; background-color: orange; padding: 8px 0;">Choose your player</p>
                 <button tabindex="1" class="btn-persona" @click="start('jan')">
                     <img src="assets/jan.png">
@@ -42,7 +42,7 @@
                     <div id="profile" v-if="persona" style="background-image: url(assets/{{ persona }}.png)"></div>
                 </div>
                 <div id="game-canvas"></div>
-                <div id="score">Score: {{ score }}</div>
+                <div id="score" v-if="running">Score: {{ score }}</div>
                 <div id="dashboard">
                     <button id="btn-control-left"
                         v-on:touchstart="keydown('left')"

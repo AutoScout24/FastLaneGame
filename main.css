@@ -49,15 +49,14 @@ button {
 }
 
 #score {
-    width: 100%;
-    color: #cc4200;
     font-size: 1.5rem;
     text-align: center;
-    height: 7vh;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 4px;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    top: 12px;
+    left: 12px;
 }
 
 [id^="btn-control-"] {

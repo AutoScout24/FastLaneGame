@@ -90,7 +90,7 @@ document.addEventListener('keyup', function (e) {
 
 window.PhaserGlobal = { disableWebAudio: true };
 
-var gameLength = 10;
+var gameLength = 60;
 
 window.PubSub.sub('game-started', function (e) {
 

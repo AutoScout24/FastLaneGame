@@ -20,6 +20,7 @@ var vm = new Vue({
         start: function(persona) {
             this.running = true;
             this.persona = persona;
+            vm.score = 0;
             window.PubSub.pub('game-started', { persona });
         },
 
@@ -40,7 +41,6 @@ window.PubSub.sub('score', score => vm.score += score);
 window.PubSub.sub('time', time => vm.time = time);
 
 window.PubSub.sub('game-over', _ => {
-    vm.score = 0;
     vm.running = false;
     vm.time = 0;
 });
@@ -66,19 +66,3 @@ document.addEventListener('keyup', e => {
             return;
     }
 });
-
-
-// const started = Date.now();
-//
-// setInterval(_ => {
-//     vm.time = 60 - (Date.now() - started) / 1000;
-// });
-
-
-// Game.onTimeChange(time => vm.time = time);
-// Game.onScoreChange(score => vm.score = score);
-// Game.onFinish(result => {
-//     vm.time = 0;
-//     vm.score = result.score;
-//     ...
-// });
