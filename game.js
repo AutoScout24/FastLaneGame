@@ -140,15 +140,15 @@ window.PubSub.sub('game-started', e => {
         var roadObject;
         var scaleFactor = 1;
 
-        if(roadObjectRnd < 0.25) {
+        if(roadObjectRnd < 0.2) {
             roadObject = oilPuddles.create(Math.random() * (game.width - 48) | 0, 0, 'oil');
             scaleFactor = (game.width / 10) / 48;
         }
-        else if (roadObjectRnd < 0.5) {
+        else if (roadObjectRnd < 0.4) {
             roadObject = beerGlasses.create(Math.random() * (game.width - 48) | 0, 0, 'beer');
             scaleFactor = (game.width / 10) / 48;
         }
-        else if (roadObjectRnd < 0.85) {
+        else if (roadObjectRnd < 0.80) {
             roadObject = stars.create(Math.random() * (game.width - 30) | 0, 0, 'star');
             scaleFactor = (game.width / 10) / 30;
         }
@@ -173,23 +173,23 @@ window.PubSub.sub('game-started', e => {
             var enemycar = traffic.create(Math.random() * (game.width - 48) | 0, -50, 'car_traffic');
             enemycar.scale.setTo(carScaleFactor, carScaleFactor);
             enemycar.enableBody = true;
-            enemycar.body.velocity.y = maxObstacleSpeed / 3;
-            enemycar.body.immovable = true;
+            enemycar.body.gravity.y = maxObstacleSpeed / 3;
+            //enemycar.body.immovable = true;
             setTimeout(function() {
                 enemycar.kill();
                 enemycar.destroy();
-            }, 8000);
+            }, 10000);
         } else if(roadObjectRnd > 0.925) {
             var motoScaleFactor = (game.width / 10) / 60;
             var motorcycle = motorcycles.create(Math.random() * (game.width - 48) | 0, -50, 'motorcycle');
             motorcycle.scale.setTo(motoScaleFactor, motoScaleFactor);
             motorcycle.enableBody = true;
-            motorcycle.body.velocity.y = maxObstacleSpeed / 3;
-            motorcycle.body.immovable = true;
+            motorcycle.body.gravity.y = maxObstacleSpeed / 3;
+            //motorcycle.body.immovable = true;
             setTimeout(function() {
                 motorcycle.kill();
                 motorcycle.destroy();
-            }, 8000);
+            }, 10000);
         }
     };
 
@@ -245,7 +245,7 @@ window.PubSub.sub('game-started', e => {
         game.physics.arcade.overlap(player, stars, collectStar, null, this);
         game.physics.arcade.overlap(player, obstacles, showExplosion, null, this);
         //game.physics.arcade.overlap(player, traffic, showExplosion, null, this);
-        game.physics.arcade.overlap(player, motorcycles);
+        game.physics.arcade.collide(player, motorcycles);
         game.physics.arcade.collide(player, traffic);
 
 
