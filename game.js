@@ -2,10 +2,31 @@
 
 window.PhaserGlobal = { disableWebAudio: true };
 
+const gameLength = 10;
+
 window.PubSub.sub('game-started', e => {
 
     var el = document.querySelector('#game-canvas');
-    var game = new Phaser.Game(el.clientWidth, el.clientHeight, Phaser.AUTO, el, { preload: preload, create: create, update: update  });
+
+    if (window.game) {
+        window.game.destroy();
+    }
+
+    window.game = new Phaser.Game(el.clientWidth, el.clientHeight, Phaser.AUTO, el, { preload: preload, create: create, update: update  });
+
+    const started = Date.now();
+    const interval = setInterval(_ => {
+        const timeToGo = gameLength - (Date.now() - started) / 1000;
+        window.PubSub.pub('time', timeToGo);
+
+        if (timeToGo <= 0) {
+            window.PubSub.pub('game-over');
+            showExplosion();
+        }
+    });
+
+    window.PubSub.sub('game-over', _ => clearInterval(interval));
+
 
     function preload() {
         game.load.image('road', 'assets/tunnel_road.png');
@@ -224,12 +245,12 @@ window.PubSub.sub('game-started', e => {
         var explosion = explosions.create(player.position.x, player.position.y - 60, 'kaboom');
         explosion.animations.add('kaboom');
         explosion.play('kaboom', 30, false, true);
-
         game.sound.play('explosion', 1);
-
         player.kill();
         //game.destroy();
-    };
+
+        window.PubSub.pub('game-over');
+    }
 
     function update(game) {
         road.tilePosition.y += maxBgSpeed;

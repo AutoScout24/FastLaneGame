@@ -4,7 +4,7 @@ Vue.filter('time', val => {
 
 var vm = new Vue({
     data: {
-        time: 48,
+        time: 0,
         score: 0,
         running: false,
         persona: ''
@@ -37,6 +37,14 @@ var vm = new Vue({
 
 window.PubSub.sub('score', score => vm.score += score);
 
+window.PubSub.sub('time', time => vm.time = time);
+
+window.PubSub.sub('game-over', _ => {
+    vm.score = 0;
+    vm.running = false;
+    vm.time = 0;
+});
+
 document.addEventListener('keydown', e => {
     switch (e.keyCode) {
         case 37:
@@ -60,11 +68,11 @@ document.addEventListener('keyup', e => {
 });
 
 
-const started = Date.now();
-
-setInterval(_ => {
-    vm.time = 60 - (Date.now() - started) / 1000;
-});
+// const started = Date.now();
+//
+// setInterval(_ => {
+//     vm.time = 60 - (Date.now() - started) / 1000;
+// });
 
 
 // Game.onTimeChange(time => vm.time = time);
