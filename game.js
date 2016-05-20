@@ -13,8 +13,6 @@ window.PubSub.sub('game-started', e => {
         game.load.image('obstacle', 'assets/obstacle.png');
         game.load.image('star', 'assets/star.png');
 
-        game.load.image('car', 'assets/car_blue.png');
-
         game.load.image('car_jan', 'assets/car_jan.png');
         game.load.image('car_shenaz', 'assets/car_shenaz.png');
         game.load.image('car_johanna', 'assets/car_johanna.png');
