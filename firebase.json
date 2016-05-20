@@ -1,5 +1,4 @@
 {
-  "firebase": "fastlane-3ca85",
   "database": {
     "rules": "database.rules.json"
   },

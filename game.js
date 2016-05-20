@@ -29,7 +29,7 @@ function preload() {
     game.load.image('star', 'assets/star.png');
     game.load.image('car', 'assets/car_blue.png');
     game.load.spritesheet('kaboom', 'assets/explode.png', 128, 128);
-
+    game.load.audio('pickup-coin', 'assets/pickup-coin.wav');
 }
 
 var player;
@@ -135,6 +135,7 @@ function setSlideAround(player, puddle) {
 
 function collectStar (player, star) {
     window.PubSub.pub('score', 10);
+    game.sound.play('pickup-coin');
     // Removes the star from the screen
     star.kill();
 }
