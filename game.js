@@ -22,6 +22,7 @@ function preload() {
     game.load.image('obstacle', 'assets/obstacle.png');
     game.load.image('star', 'assets/star.png');
     game.load.image('car', 'assets/car_blue.png');
+    game.load.spritesheet('kaboom', 'assets/explode.png', 128, 128);
 
 }
 
@@ -55,7 +56,7 @@ function create() {
     // The player and its settings
     player = game.add.sprite(25, game.height, 'car');
     var carScaleFactor = (game.width / 10) / 26;
-    console.log('scale ' + carScaleFactor);
+
     player.scale.setTo(carScaleFactor, carScaleFactor);
 
     //  We need to enable physics on the player
@@ -102,7 +103,7 @@ function createRoadObject() {
     }
     roadObject.scale.setTo(scaleFactor, scaleFactor);
     roadObject.enableBody = true;
-    roadObject.body.gravity.y = 500;
+    roadObject.body.velocity.y = 400;
     setTimeout(function() {roadObject.kill();roadObject.destroy();}, 4000);
 };
 
@@ -138,7 +139,7 @@ function update(game) {
     log(game);
     log = x => x;
 
-    road.tilePosition.y += 10;
+    road.tilePosition.y += 7;
     //  Collide the player and the stars with the platforms
     //game.physics.arcade.collide(player, obstacles);
 
@@ -150,8 +151,13 @@ function update(game) {
     game.physics.arcade.overlap(player, beerGlasses, setInvertControls, null, this);
     game.physics.arcade.overlap(player, stars, collectStar, null, this);
     game.physics.arcade.overlap(player, obstacles, function() {
+        var explosions = game.add.group();
+        var explosion = explosions.create(player.position.x, player.position.y, 'kaboom');
+        explosion.animations.add('kaboom');
+        explosion.play('kaboom', 30, false, true);
+
         player.kill();
-        game.destroy();
+        //game.destroy();
         setTimeout(function(){}, 5000);
     }, null, this);
 
