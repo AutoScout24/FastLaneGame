@@ -5,7 +5,7 @@ Vue.filter('time', val => {
 var vm = new Vue({
     data: {
         time: 48,
-        score: 14999,
+        score: 0,
         running: false
     },
 
@@ -30,6 +30,8 @@ var vm = new Vue({
 
     el: 'main'
 });
+
+window.PubSub.sub('score', score => vm.score += score);
 
 document.addEventListener('keydown', e => {
     switch (e.keyCode) {

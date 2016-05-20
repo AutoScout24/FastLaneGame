@@ -34,10 +34,7 @@ function preload() {
 
 var player;
 var cursors;
-
 var stars;
-var score = 0;
-var scoreText;
 
 function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -75,9 +72,6 @@ function create() {
     //  Our two animations, walking left and right.
     player.animations.add('left', [0], 0, true);
     player.animations.add('right', [0], 0, true);
-
-    //  The score
-    scoreText = game.add.text(24, 24, 'score: 0', { fontSize: '26px', fill: '#000' });
 
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
@@ -130,12 +124,9 @@ function setSlideAround(player, puddle) {
 };
 
 function collectStar (player, star) {
+    window.PubSub.pub('score', 10);
     // Removes the star from the screen
     star.kill();
-
-    //  Add and update the score
-    score += 10;
-    scoreText.text = 'Score: ' + score;
 }
 
 var log = x => console.log(x);
