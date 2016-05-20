@@ -83,7 +83,7 @@ window.PubSub.sub('game-started', e => {
         motorcycles.enableBody = true;
 
         // The player and its settings
-        player = game.add.sprite(25, game.height - 50, 'car_' + e.persona);
+        player = game.add.sprite(game.width / 2, game.height - 50, 'car_' + e.persona);
         var carScaleFactor = (game.width / 10) / 65;
         player.anchor.setTo(0.5,0.5);
         player.scale.setTo(carScaleFactor, carScaleFactor);
