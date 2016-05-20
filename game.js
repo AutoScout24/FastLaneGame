@@ -1,5 +1,18 @@
+window.Game = {
+    init: _ => {},
+    start: _ => {},
+    pause: _ => {},
+    reset: _ => {},
+
+    keydown: dir => {},
+    keyup: dir => {}
+};
+
+
 var el = document.querySelector('#game-canvas');
 var game = new Phaser.Game(el.clientWidth, el.clientHeight, Phaser.AUTO, el, { preload: preload, create: create, update: update  });
+
+// game.pause();
 
 function preload() {
     game.load.image('road', 'assets/tunnel_road.png');
