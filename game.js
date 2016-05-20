@@ -129,12 +129,7 @@ function collectStar (player, star) {
     star.kill();
 }
 
-var log = x => console.log(x);
-
 function update(game) {
-
-    log(game);
-    log = x => x;
 
     road.tilePosition.y += 7;
     //  Collide the player and the stars with the platforms
