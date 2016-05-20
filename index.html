@@ -160,7 +160,7 @@
                     <div id="time">{{ time | time }}</div>
                     <div id="profile"></div>
                 </div>
-                <canvas id="game-canvas"></canvas>
+                <div id="game-canvas"></div>
                 <div id="score">{{ score }} km</div>
                 <div id="dashboard">
                     <button id="btn-control-left" v-on:touchstart="keypress('left')" v-on:mousedown="keypress('left')"></button>
@@ -171,5 +171,6 @@
         </main>
 
         <script src="index.js"></script>
+        <script src="game.js"></script>
     </body>
 </html>
