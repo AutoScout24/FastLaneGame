@@ -1,4 +1,5 @@
-var game = new Phaser.Game('100%', '100%', Phaser.AUTO, 'game-canvas', { preload: preload, create: create, update: update  });
+var el = document.querySelector('#game-canvas');
+var game = new Phaser.Game(el.clientWidth, el.clientHeight, Phaser.AUTO, el, { preload: preload, create: create, update: update  });
 
 function preload() {
     game.load.image('road', 'assets/tunnel_road.png');
@@ -41,7 +42,7 @@ function create() {
     // The player and its settings
     // player = game.add.sprite(25, (window.innerHeight -  parseInt(window.innerHeight / 5, 10)), 'car');
     // player = game.add.sprite(25, game.height, 'car');
-    player = game.add.sprite(25, game.height - 500, 'car');
+    player = game.add.sprite(25, game.height, 'car');
     // player.scale.setTo(scaleFactor * 3, scaleFactor * 3);
     //  We need to enable physics on the player
     game.physics.arcade.enable(player);
@@ -132,7 +133,13 @@ function collectStar (player, star) {
     scoreText.text = 'Score: ' + score;
 }
 
-function update() {
+var log = x => console.log(x);
+
+function update(game) {
+
+    log(game);
+    log = x => x;
+
     road.tilePosition.y += 10;
     //  Collide the player and the stars with the platforms
     //game.physics.arcade.collide(player, obstacles);
