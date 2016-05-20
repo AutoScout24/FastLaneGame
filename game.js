@@ -2,7 +2,7 @@
 
 window.PhaserGlobal = { disableWebAudio: true };
 
-const gameLength = 10;
+const gameLength = 60;
 
 window.PubSub.sub('game-started', e => {
 

@@ -6,7 +6,7 @@ Vue.filter('time', function (val) {
 
 var vm = new Vue({
     data: {
-        time: 48,
+        time: 0,
         score: 0,
         running: false,
         persona: ''
@@ -41,6 +41,16 @@ window.PubSub.sub('score', function (score) {
     return vm.score += score;
 });
 
+window.PubSub.sub('time', function (time) {
+    return vm.time = time;
+});
+
+window.PubSub.sub('game-over', function (_) {
+    vm.score = 0;
+    vm.running = false;
+    vm.time = 0;
+});
+
 document.addEventListener('keydown', function (e) {
     switch (e.keyCode) {
         case 37:
@@ -63,11 +73,11 @@ document.addEventListener('keyup', function (e) {
     }
 });
 
-var started = Date.now();
-
-setInterval(function (_) {
-    vm.time = 60 - (Date.now() - started) / 1000;
-});
+// const started = Date.now();
+//
+// setInterval(_ => {
+//     vm.time = 60 - (Date.now() - started) / 1000;
+// });
 
 // Game.onTimeChange(time => vm.time = time);
 // Game.onScoreChange(score => vm.score = score);
@@ -80,10 +90,32 @@ setInterval(function (_) {
 
 window.PhaserGlobal = { disableWebAudio: true };
 
+var gameLength = 10;
+
 window.PubSub.sub('game-started', function (e) {
 
     var el = document.querySelector('#game-canvas');
-    var game = new Phaser.Game(el.clientWidth, el.clientHeight, Phaser.AUTO, el, { preload: preload, create: create, update: update });
+
+    if (window.game) {
+        window.game.destroy();
+    }
+
+    window.game = new Phaser.Game(el.clientWidth, el.clientHeight, Phaser.AUTO, el, { preload: preload, create: create, update: update });
+
+    var started = Date.now();
+    var interval = setInterval(function (_) {
+        var timeToGo = gameLength - (Date.now() - started) / 1000;
+        window.PubSub.pub('time', timeToGo);
+
+        if (timeToGo <= 0) {
+            window.PubSub.pub('game-over');
+            showExplosion();
+        }
+    });
+
+    window.PubSub.sub('game-over', function (_) {
+        return clearInterval(interval);
+    });
 
     function preload() {
         game.load.image('road', 'assets/tunnel_road.png');
@@ -158,7 +190,7 @@ window.PubSub.sub('game-started', function (e) {
         motorcycles.enableBody = true;
 
         // The player and its settings
-        player = game.add.sprite(25, game.height - 50, 'car_' + e.persona);
+        player = game.add.sprite(game.width / 2, game.height - 50, 'car_' + e.persona);
         var carScaleFactor = game.width / 10 / 65;
         player.anchor.setTo(0.5, 0.5);
         player.scale.setTo(carScaleFactor, carScaleFactor);
@@ -218,13 +250,13 @@ window.PubSub.sub('game-started', function (e) {
         var roadObject;
         var scaleFactor = 1;
 
-        if (roadObjectRnd < 0.2) {
+        if (roadObjectRnd < 0.18) {
             roadObject = oilPuddles.create(Math.random() * (game.width - 48) | 0, 0, 'oil');
             scaleFactor = game.width / 10 / 48;
-        } else if (roadObjectRnd < 0.4) {
+        } else if (roadObjectRnd < 0.36) {
             roadObject = beerGlasses.create(Math.random() * (game.width - 48) | 0, 0, 'beer');
             scaleFactor = game.width / 10 / 48;
-        } else if (roadObjectRnd < 0.80) {
+        } else if (roadObjectRnd < 0.9) {
             roadObject = stars.create(Math.random() * (game.width - 30) | 0, 0, 'star');
             scaleFactor = game.width / 10 / 30;
         } else {
@@ -299,12 +331,12 @@ window.PubSub.sub('game-started', function (e) {
         var explosion = explosions.create(player.position.x, player.position.y - 60, 'kaboom');
         explosion.animations.add('kaboom');
         explosion.play('kaboom', 30, false, true);
-
         game.sound.play('explosion', 1);
-
         player.kill();
         //game.destroy();
-    };
+
+        window.PubSub.pub('game-over');
+    }
 
     function update(game) {
         road.tilePosition.y += maxBgSpeed;
