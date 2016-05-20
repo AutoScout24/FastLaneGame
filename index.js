@@ -23,9 +23,12 @@ var vm = new Vue({
             window.PubSub.pub('game-started', { persona });
         },
 
-        keypress: function(dir) {
-            console.log('Key pressed:', dir);
-            // Game[dir]();
+        keydown: dir => {
+            window.PubSub.pub('keydown', dir);
+        },
+
+        keyup: dir => {
+            window.PubSub.pub('keyup', dir);
         }
     },
 
@@ -36,12 +39,23 @@ window.PubSub.sub('score', score => vm.score += score);
 
 document.addEventListener('keydown', e => {
     switch (e.keyCode) {
-        case 40:
-            return vm.keypress('brake');
         case 37:
-            return vm.keypress('left');
+            window.PubSub.pub('keydown', 'left');
+            return;
         case 39:
-            return vm.keypress('right');
+            window.PubSub.pub('keydown', 'right');
+            return;
+    }
+});
+
+document.addEventListener('keyup', e => {
+    switch (e.keyCode) {
+        case 37:
+            window.PubSub.pub('keyup', 'left');
+            return;
+        case 39:
+            window.PubSub.pub('keyup', 'right');
+            return;
     }
 });
 

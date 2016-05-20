@@ -35,7 +35,17 @@ window.PubSub.sub('game-started', e => {
     }
 
     var player;
-    var cursors;
+
+    var cursors = { left: false, right: false };
+
+    window.PubSub.sub('keydown', dir => {
+        cursors[dir] = true;
+    });
+
+    window.PubSub.sub('keyup', dir => {
+        cursors[dir] = false;
+    });
+
     var stars;
 
     function create() {
@@ -75,15 +85,13 @@ window.PubSub.sub('game-started', e => {
         player.animations.add('left', [0], 0, true);
         player.animations.add('right', [0], 0, true);
 
-        //  Our controls.
-        cursors = game.input.keyboard.createCursorKeys();
-            maxBgSpeed = 7;
-            currentBgSpeed = 0;
-            maxObstacleSpeed = 400;
-            window.setInterval(function() {
-                if(currentBgSpeed < maxBgSpeed) {
-                    currentBgSpeed++;
-                }
+        maxBgSpeed = 7;
+        currentBgSpeed = 0;
+        maxObstacleSpeed = 400;
+        window.setInterval(function() {
+            if(currentBgSpeed < maxBgSpeed) {
+                currentBgSpeed++;
+            }
         }, 300);
     }
 
@@ -179,13 +187,13 @@ window.PubSub.sub('game-started', e => {
             player.angle = player.angle + 10;
             return;
         }
-        if (cursors.left.isDown)
+        if (cursors.left)
         {
             //  Move to the left
             player.body.velocity.x = invertedControls ? laneOffset : -laneOffset;
             player.angle = invertedControls ? 10 : -10;
         }
-        else if (cursors.right.isDown)
+        else if (cursors.right)
         {
             //  Move to the right
             player.body.velocity.x = invertedControls ? -laneOffset : laneOffset;

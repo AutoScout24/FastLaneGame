@@ -38,9 +38,17 @@
                 <div id="game-canvas"></div>
                 <div id="score">Score: {{ score }}</div>
                 <div id="dashboard">
-                    <button id="btn-control-left" v-on:touchstart="keypress('left')" v-on:mousedown="keypress('left')"></button>
-                    <!-- <button id="btn-control-brake" v-on:touchstart="keypress('brake')" v-on:mousedown="keypress('brake')"></button> -->
-                    <button id="btn-control-right" v-on:touchstart="keypress('right')" v-on:mousedown="keypress('right')"></button>
+                    <button id="btn-control-left"
+                        v-on:touchstart="keydown('left')"
+                        v-on:touchend="keyup('left')"
+                        v-on:mousedown="keydown('left')"
+                        v-on:mouseup="keyup('left')"></button>
+
+                    <button id="btn-control-right"
+                        v-on:touchstart="keydown('right')"
+                        v-on:touchend="keyup('right')"
+                        v-on:mousedown="keydown('right')"
+                        v-on:mouseup="keyup('right')"></button>
                 </div>
             </section>
         </main>
