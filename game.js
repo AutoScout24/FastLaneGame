@@ -62,6 +62,7 @@ window.PubSub.sub('game-started', e => {
     var obstacles;
     var currentBgSpeed;
     var maxObstacleSpeed;
+    var obstacleRandomFactor;
     var scoreBonus;
 
     var cursors = { left: false, right: false };
@@ -124,7 +125,7 @@ window.PubSub.sub('game-started', e => {
         currentBgSpeed = 0;
         maxObstacleSpeed = getMaxObstacleSpeed(e.persona);
         scoreBonus = getScoreBonus(e.persona);
-
+        obstacleRandomFactor = getObstacleRandomFactor(e.persona);
         /*window.setInterval(function() {
             if(currentBgSpeed < maxBgSpeed) {
                 currentBgSpeed++;
@@ -157,6 +158,15 @@ window.PubSub.sub('game-started', e => {
             return 300;
         }
         return 400;
+    };
+
+    function getObstacleRandomFactor(hero) {
+        if(hero == 'jan') {
+            return 0.98;
+        } else if(hero == 'volker') {
+            return 0.96;
+        }
+        return 0.97;
     };
 
     function createRoadObject() {
@@ -260,7 +270,7 @@ window.PubSub.sub('game-started', e => {
         //  Collide the player and the stars with the platforms
         //game.physics.arcade.collide(player, obstacles);
 
-        if(Math.random() > 0.985)
+        if(Math.random() > obstacleRandomFactor)
             createRoadObject();
 
         //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
