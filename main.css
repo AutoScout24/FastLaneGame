@@ -150,6 +150,13 @@ button {
   width: 130px;
 }
 
+.btn-persona:focus {
+  outline: 4px solid orange;
+}
+.btn-persona:active {
+  outline: 4px solid orange;
+}
+
 .btn-persona img {
   border-radius: 4px;
   max-width: 100%;

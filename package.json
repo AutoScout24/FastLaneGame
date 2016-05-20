@@ -1,0 +1,25 @@
+{
+  "name": "FastLaneGame",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "babel": "babel index.js game.js --presets es2015 -o game-compiled.js",
+    "deploy": "npm run babel && firebase deploy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AutoScout24/FastLaneGame.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AutoScout24/FastLaneGame/issues"
+  },
+  "homepage": "https://github.com/AutoScout24/FastLaneGame#readme",
+  "dependencies": {
+    "babel-cli": "^6.9.0",
+    "babel-preset-es2015": "^6.9.0"
+  }
+}

@@ -23,6 +23,7 @@ window.PubSub.sub('game-started', e => {
         game.load.audio('explosion', 'assets/explosion.wav');
     }
 
+
     var player;
     var road;
     var scaleFactor;
@@ -33,7 +34,7 @@ window.PubSub.sub('game-started', e => {
     var currentBgSpeed;
     var maxObstacleSpeed;
     var scoreBonus;
-    
+
     var cursors = { left: false, right: false };
 
     window.PubSub.sub('keydown', dir => {
@@ -172,7 +173,7 @@ window.PubSub.sub('game-started', e => {
 
     function collectStar (player, star) {
         window.PubSub.pub('score', 10);
-        game.sound.play('pickup-coin');
+        game.sound.play('pickup-coin', 0.5);
         // Removes the star from the screen
         star.kill();
     }
@@ -198,7 +199,7 @@ window.PubSub.sub('game-started', e => {
             explosion.animations.add('kaboom');
             explosion.play('kaboom', 30, false, true);
 
-            game.sound.play('explosion');
+            game.sound.play('explosion', 2);
 
             player.kill();
             //game.destroy();
