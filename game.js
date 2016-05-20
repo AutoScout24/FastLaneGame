@@ -143,15 +143,15 @@ window.PubSub.sub('game-started', e => {
         var roadObject;
         var scaleFactor = 1;
 
-        if(roadObjectRnd < 0.2) {
+        if(roadObjectRnd < 0.18) {
             roadObject = oilPuddles.create(Math.random() * (game.width - 48) | 0, 0, 'oil');
             scaleFactor = (game.width / 10) / 48;
         }
-        else if (roadObjectRnd < 0.4) {
+        else if (roadObjectRnd < 0.36) {
             roadObject = beerGlasses.create(Math.random() * (game.width - 48) | 0, 0, 'beer');
             scaleFactor = (game.width / 10) / 48;
         }
-        else if (roadObjectRnd < 0.80) {
+        else if (roadObjectRnd < 0.9) {
             roadObject = stars.create(Math.random() * (game.width - 30) | 0, 0, 'star');
             scaleFactor = (game.width / 10) / 30;
         }
