@@ -259,7 +259,8 @@ window.PubSub.sub('game-started', e => {
         player.kill();
         //game.destroy();
 
-        window.PubSub.pub('game-over');
+        setTimeout(_ => window.PubSub.pub('game-over'), 1000);
+        ;
     }
 
     function update(game) {

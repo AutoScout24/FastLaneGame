@@ -22,6 +22,7 @@ var vm = new Vue({
         start: function start(persona) {
             this.running = true;
             this.persona = persona;
+            vm.score = 0;
             window.PubSub.pub('game-started', { persona: persona });
         },
 
@@ -46,7 +47,6 @@ window.PubSub.sub('time', function (time) {
 });
 
 window.PubSub.sub('game-over', function (_) {
-    vm.score = 0;
     vm.running = false;
     vm.time = 0;
 });
@@ -72,20 +72,6 @@ document.addEventListener('keyup', function (e) {
             return;
     }
 });
-
-// const started = Date.now();
-//
-// setInterval(_ => {
-//     vm.time = 60 - (Date.now() - started) / 1000;
-// });
-
-// Game.onTimeChange(time => vm.time = time);
-// Game.onScoreChange(score => vm.score = score);
-// Game.onFinish(result => {
-//     vm.time = 0;
-//     vm.score = result.score;
-//     ...
-// });
 'use strict';
 
 window.PhaserGlobal = { disableWebAudio: true };
@@ -149,6 +135,7 @@ window.PubSub.sub('game-started', function (e) {
     var obstacles;
     var currentBgSpeed;
     var maxObstacleSpeed;
+    var obstacleRandomFactor;
     var scoreBonus;
 
     var cursors = { left: false, right: false };
@@ -210,7 +197,7 @@ window.PubSub.sub('game-started', function (e) {
         currentBgSpeed = 0;
         maxObstacleSpeed = getMaxObstacleSpeed(e.persona);
         scoreBonus = getScoreBonus(e.persona);
-
+        obstacleRandomFactor = getObstacleRandomFactor(e.persona);
         /*window.setInterval(function() {
             if(currentBgSpeed < maxBgSpeed) {
                 currentBgSpeed++;
@@ -243,6 +230,15 @@ window.PubSub.sub('game-started', function (e) {
             return 300;
         }
         return 400;
+    };
+
+    function getObstacleRandomFactor(hero) {
+        if (hero == 'jan') {
+            return 0.98;
+        } else if (hero == 'volker') {
+            return 0.96;
+        }
+        return 0.97;
     };
 
     function createRoadObject() {
@@ -335,7 +331,10 @@ window.PubSub.sub('game-started', function (e) {
         player.kill();
         //game.destroy();
 
-        window.PubSub.pub('game-over');
+        setTimeout(function (_) {
+            return window.PubSub.pub('game-over');
+        }, 1000);
+        ;
     }
 
     function update(game) {
@@ -345,7 +344,7 @@ window.PubSub.sub('game-started', function (e) {
         //  Collide the player and the stars with the platforms
         //game.physics.arcade.collide(player, obstacles);
 
-        if (Math.random() > 0.985) createRoadObject();
+        if (Math.random() > obstacleRandomFactor) createRoadObject();
 
         //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
         game.physics.arcade.overlap(player, oilPuddles, setSlideAround, null, this);
