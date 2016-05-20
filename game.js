@@ -13,7 +13,9 @@ window.PubSub.sub('game-started', e => {
         game.load.image('obstacle', 'assets/obstacle.png');
         game.load.image('star', 'assets/star.png');
 
-        game.load.image('car', 'assets/car_blue.png');
+        game.load.image('car_traffic', 'assets/car_traffic.png');
+        game.load.image('motorcycle', 'assets/motorcycle.png');
+
 
         game.load.image('car_jan', 'assets/car_jan.png');
         game.load.image('car_shenaz', 'assets/car_shenaz.png');
@@ -31,6 +33,8 @@ window.PubSub.sub('game-started', e => {
     var maxBgSpeed;
     var oilPuddles;
     var beerGlasses;
+    var motorcycles;
+    var traffic;
     var obstacles;
     var currentBgSpeed;
     var maxObstacleSpeed;
@@ -65,6 +69,13 @@ window.PubSub.sub('game-started', e => {
 
         stars = game.add.group();
         stars.enableBody = true;
+
+
+        traffic = game.add.group();
+        traffic.enableBody = true;
+
+        motorcycles = game.add.group();
+        motorcycles.enableBody = true;
 
         // The player and its settings
         player = game.add.sprite(25, game.height - 50, 'car_' + e.persona);
@@ -127,15 +138,15 @@ window.PubSub.sub('game-started', e => {
         var roadObject;
         var scaleFactor = 1;
 
-        if(roadObjectRnd < 0.3) {
+        if(roadObjectRnd < 0.25) {
             roadObject = oilPuddles.create(Math.random() * (game.width - 48) | 0, 0, 'oil');
             scaleFactor = (game.width / 10) / 48;
         }
-        else if (roadObjectRnd < 0.6) {
+        else if (roadObjectRnd < 0.5) {
             roadObject = beerGlasses.create(Math.random() * (game.width - 48) | 0, 0, 'beer');
             scaleFactor = (game.width / 10) / 48;
         }
-        else if (roadObjectRnd < 0.8) {
+        else if (roadObjectRnd < 0.85) {
             roadObject = stars.create(Math.random() * (game.width - 30) | 0, 0, 'star');
             scaleFactor = (game.width / 10) / 30;
         }
@@ -145,6 +156,7 @@ window.PubSub.sub('game-started', e => {
             roadObject = obstacles.create(positionX, 0, 'obstacle');
             scaleFactor = (game.width / 6) / 100;
         }
+
         roadObject.scale.setTo(scaleFactor, scaleFactor);
         roadObject.enableBody = true;
         roadObject.body.velocity.y = maxObstacleSpeed;
@@ -152,6 +164,21 @@ window.PubSub.sub('game-started', e => {
              roadObject.kill();
              roadObject.destroy();
         }, 4000);
+
+
+        if(roadObjectRnd < 0.075) {
+            var carScaleFactor = (game.width / 10) / 65;
+            var enemycar = traffic.create(Math.random() * (game.width - 48) | 0, 0, 'car_traffic');
+            enemycar.scale.setTo(carScaleFactor, carScaleFactor);
+            enemycar.enableBody = true;
+            enemycar.body.velocity.y = maxObstacleSpeed / 3;
+        } else if(roadObjectRnd > 0.925) {
+            var motoScaleFactor = (game.width / 10) / 40;
+            var motorcycle = motorcycles.create(Math.random() * (game.width - 48) | 0, 0, 'motorcycle');
+            motorcycle.scale.setTo(motoScaleFactor, motoScaleFactor);
+            motorcycle.enableBody = true;
+            motorcycle.body.velocity.y = maxObstacleSpeed / 3;
+        }
     };
 
     var invertedControls = false;
@@ -177,6 +204,18 @@ window.PubSub.sub('game-started', e => {
         star.kill();
     }
 
+    function showExplosion() {
+        var explosions = game.add.group();
+        var explosion = explosions.create(player.position.x, player.position.y - 60, 'kaboom');
+        explosion.animations.add('kaboom');
+        explosion.play('kaboom', 30, false, true);
+
+        game.sound.play('explosion');
+
+        player.kill();
+        //game.destroy();
+    };
+
     function update(game) {
         road.tilePosition.y += maxBgSpeed;
         if(!slidingAround)
@@ -192,17 +231,7 @@ window.PubSub.sub('game-started', e => {
         game.physics.arcade.overlap(player, oilPuddles, setSlideAround, null, this);
         game.physics.arcade.overlap(player, beerGlasses, setInvertControls, null, this);
         game.physics.arcade.overlap(player, stars, collectStar, null, this);
-        game.physics.arcade.overlap(player, obstacles, function() {
-            var explosions = game.add.group();
-            var explosion = explosions.create(player.position.x, player.position.y - 60, 'kaboom');
-            explosion.animations.add('kaboom');
-            explosion.play('kaboom', 30, false, true);
-
-            game.sound.play('explosion');
-
-            player.kill();
-            //game.destroy();
-        }, null, this);
+        game.physics.arcade.overlap(player, obstacles, showExplosion, null, this);
 
 
         //  Reset the players velocity (movement)
